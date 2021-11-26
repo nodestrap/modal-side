@@ -288,53 +288,47 @@ export function ModalSideElement(props) {
     const headerFn = (() => {
         // default (unset) or string:
         if ((header === undefined) || (typeof header === 'string'))
-            return (<h5 
-            // classes:
-            className={sheet.actionBar}>
-                {header}
-                <CloseButton 
-            // variants:
-            size={props.size} 
-            // actions:
-            onClick={handleClose}/>
-            </h5>);
+            return (React.createElement("h5", { 
+                // classes:
+                className: sheet.actionBar },
+                header,
+                React.createElement(CloseButton
+                // variants:
+                , { 
+                    // variants:
+                    size: props.size, 
+                    // actions:
+                    onClick: handleClose })));
         // other component:
         return header;
     })();
     // jsx:
-    return (<Collapse 
-    // accessibilities:
-    {...{
-        active,
-        inheritActive,
-    }} 
-    // layouts:
-    orientation={props.modalSideStyle?.startsWith('block') ? 'block' : 'inline'} 
-    // appearances:
-    nude={true} 
-    // classes:
-    classes={[
+    return (React.createElement(Collapse, { ...{
+            active,
+            inheritActive,
+        }, 
+        // layouts:
+        orientation: props.modalSideStyle?.startsWith('block') ? 'block' : 'inline', 
+        // appearances:
+        nude: true, 
+        // classes:
+        classes: [
             sheet.main, // inject ModalSideElement class
-        ]} stateClasses={[...(props.stateClasses ?? []),
+        ], stateClasses: [...(props.stateClasses ?? []),
             excitedState.class,
-        ]} 
-    // events:
-    onAnimationEnd={(e) => {
+        ], 
+        // events:
+        onAnimationEnd: (e) => {
             // states:
             excitedState.handleAnimationEnd(e);
-        }}>
-            <Card 
-    // other props:
-    {...restProps} 
-    // essentials:
-    elmRef={elmRef} 
-    // accessibilities:
-    {...{
-        tabIndex,
-    }} 
-    // children:
-    header={headerFn}/>
-        </Collapse>);
+        } },
+        React.createElement(Card, { ...restProps, 
+            // essentials:
+            elmRef: elmRef, ...{
+                tabIndex,
+            }, 
+            // children:
+            header: headerFn })));
 }
 ModalSideElement.prototype = ModalElement.prototype; // mark as ModalElement compatible
 export function ModalSide(props) {
@@ -343,16 +337,11 @@ export function ModalSide(props) {
     // variants:
     const modalSideVariant = useModalSideVariant(props);
     // jsx:
-    return (<Modal 
-    // other props:
-    {...props} 
-    // classes:
-    mainClass={props.mainClass ?? sheet.main} variantClasses={[...(props.variantClasses ?? []),
+    return (React.createElement(Modal, { ...props, 
+        // classes:
+        mainClass: props.mainClass ?? sheet.main, variantClasses: [...(props.variantClasses ?? []),
             modalSideVariant.class,
-        ]}>
-            <ModalSideElement 
-    // other props:
-    {...props}/>
-        </Modal>);
+        ] },
+        React.createElement(ModalSideElement, { ...props })));
 }
 export { ModalSide as default };
