@@ -164,7 +164,7 @@ export const useModalSideElementSheet = createUseSheet(() => [
             usesActionBarLayout(),
         ]),
     ]),
-]);
+], /*sheetId :*/ 'qvp7n6e4ck'); // an unique salt for SSR support, ensures the server-side & client-side have the same generated class names
 export const usesModalSideLayout = () => {
     return composition([
         imports([
@@ -253,7 +253,7 @@ export const useModalSideSheet = createUseSheet(() => [
             usesModalSideStates(),
         ]),
     ]),
-]);
+], /*sheetId :*/ 'g93sfdvlhc'); // an unique salt for SSR support, ensures the server-side & client-side have the same generated class names
 // configs:
 export const [cssProps, cssDecls, cssVals, cssConfig] = createCssConfig(() => {
     return {
