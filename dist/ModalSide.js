@@ -3,11 +3,13 @@ import { default as React, } from 'react'; // base technology of our nodestrap c
 // cssfn:
 import { 
 // compositions:
-composition, compositionOf, mainComposition, imports, 
-// layouts:
-layout, children, 
+compositionOf, mainComposition, 
+// styles:
+style, imports, 
 // rules:
-variants, rule, } from '@cssfn/cssfn'; // cssfn core
+rule, variants, 
+//combinators:
+children, } from '@cssfn/cssfn'; // cssfn core
 import { 
 // hooks:
 createUseSheet, } from '@cssfn/react-cssfn'; // cssfn for react
@@ -17,7 +19,7 @@ usesGeneralProps, usesPrefixedProps, usesSuffixedProps, overwriteProps, } from '
 // nodestrap components:
 import { 
 // hooks:
-usesSizeVariant, usesBorderRadius, usesExcitedState, useExcitedState, } from '@nodestrap/basic';
+usesSizeVariant, usesBorderRadius, useExcitedState, } from '@nodestrap/basic';
 import CloseButton from '@nodestrap/close-button';
 import { Card, } from '@nodestrap/card';
 import { 
@@ -25,7 +27,7 @@ import {
 Collapse, } from '@nodestrap/collapse';
 import { 
 // styles:
-usesModalElementLayout, usesModalLayout, usesModalVariants, usesModalStates, ModalElement, Modal, } from '@nodestrap/modal';
+usesModalElementLayout, usesModalElementStates, usesModalLayout, usesModalVariants, usesModalStates, ModalElement, Modal, } from '@nodestrap/modal';
 import { 
 // styles:
 usesActionBarLayout, } from '@nodestrap/modal-card';
@@ -36,142 +38,113 @@ export const useModalSideVariant = (props) => {
 };
 // styles:
 export const usesModalSideElementLayout = () => {
-    return composition([
-        imports([
+    return style({
+        ...imports([
             // layouts:
             usesModalElementLayout(),
         ]),
-        layout({
+        ...style({
             // layouts:
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'start',
             alignItems: 'stretch',
             flexWrap: 'nowrap',
-            // sizes:
-            boxSizing: 'border-box',
-            inlineSize: 'auto',
-            maxInlineSize: '100%',
-            blockSize: 'auto',
-            maxBlockSize: '100%',
-            overflow: 'hidden',
             // children:
-            ...children('*', [
-                layout({
-                    // sizes:
-                    flex: [[1, 1, '100%']],
-                    boxSizing: 'inherit',
-                    inlineSize: 'inherit',
-                    maxInlineSize: 'inherit',
-                    blockSize: 'inherit',
-                    maxBlockSize: 'inherit',
-                    // customize:
-                    ...usesGeneralProps(usesPrefixedProps(cssProps, 'card')), // apply general cssProps starting with card***
-                }),
-            ]),
+            ...children(['&', '*'], {
+                // sizes:
+                boxSizing: 'border-box',
+                inlineSize: 'auto',
+                maxInlineSize: '100%',
+                blockSize: 'auto',
+                maxBlockSize: '100%',
+                overflow: 'hidden', // force the Card to scroll
+            }),
+            // children:
+            ...children('*', {
+                // sizes:
+                flex: [[1, 1, '100%']],
+                // customize:
+                ...usesGeneralProps(usesPrefixedProps(cssProps, 'card')), // apply general cssProps starting with card***
+            }),
         }),
-    ]);
+    });
 };
 export const usesModalSideElementVariants = () => {
     // dependencies:
     // borders:
     const [, , borderRadiusDecls] = usesBorderRadius();
-    return composition([
-        variants([
-            rule('.blockStart>&', [
-                layout({
-                    // children:
-                    ...children(['&', '*'], [
-                        layout({
-                            // borders:
-                            // remove rounded corners on top:
-                            [borderRadiusDecls.borderStartStartRadius]: '0px',
-                            [borderRadiusDecls.borderStartEndRadius]: '0px',
-                        }),
-                    ]),
+    return style({
+        ...variants([
+            rule('.blockStart>&', {
+                // children:
+                ...children(['&', '*'], {
+                    // borders:
+                    // remove rounded corners on top:
+                    [borderRadiusDecls.borderStartStartRadius]: '0px',
+                    [borderRadiusDecls.borderStartEndRadius]: '0px',
                 }),
-            ]),
-            rule('.blockEnd>&', [
-                layout({
-                    // children:
-                    ...children(['&', '*'], [
-                        layout({
-                            // borders:
-                            // remove rounded corners on bottom:
-                            [borderRadiusDecls.borderEndStartRadius]: '0px',
-                            [borderRadiusDecls.borderEndEndRadius]: '0px',
-                        }),
-                    ]),
+            }),
+            rule('.blockEnd>&', {
+                // children:
+                ...children(['&', '*'], {
+                    // borders:
+                    // remove rounded corners on bottom:
+                    [borderRadiusDecls.borderEndStartRadius]: '0px',
+                    [borderRadiusDecls.borderEndEndRadius]: '0px',
                 }),
-            ]),
-            rule('.inlineStart>&', [
-                layout({
-                    // children:
-                    ...children(['&', '*'], [
-                        layout({
-                            // borders:
-                            // remove rounded corners on left:
-                            [borderRadiusDecls.borderStartStartRadius]: '0px',
-                            [borderRadiusDecls.borderEndStartRadius]: '0px',
-                        }),
-                    ]),
+            }),
+            rule('.inlineStart>&', {
+                // children:
+                ...children(['&', '*'], {
+                    // borders:
+                    // remove rounded corners on left:
+                    [borderRadiusDecls.borderStartStartRadius]: '0px',
+                    [borderRadiusDecls.borderEndStartRadius]: '0px',
                 }),
-            ]),
-            rule('.inlineEnd>&', [
-                layout({
-                    // children:
-                    ...children(['&', '*'], [
-                        layout({
-                            // borders:
-                            // remove rounded corners on right:
-                            [borderRadiusDecls.borderStartEndRadius]: '0px',
-                            [borderRadiusDecls.borderEndEndRadius]: '0px',
-                        }),
-                    ]),
+            }),
+            rule('.inlineEnd>&', {
+                // children:
+                ...children(['&', '*'], {
+                    // borders:
+                    // remove rounded corners on right:
+                    [borderRadiusDecls.borderStartEndRadius]: '0px',
+                    [borderRadiusDecls.borderEndEndRadius]: '0px',
                 }),
-            ]),
+            }),
         ]),
-    ]);
+    });
 };
 export const usesModalSideElementStates = () => {
-    // dependencies:
-    // states:
-    const [excited] = usesExcitedState();
-    return composition([
-        imports([
+    return style({
+        ...imports([
             // states:
-            excited(),
+            usesModalElementStates(),
         ]),
-    ]);
+    });
 };
 export const useModalSideElementSheet = createUseSheet(() => [
-    mainComposition([
-        variants([
-            rule('&&', [
-                imports([
-                    // layouts:
-                    usesModalSideElementLayout(),
-                    // variants:
-                    usesModalSideElementVariants(),
-                    // states:
-                    usesModalSideElementStates(),
-                ]),
-            ]),
+    mainComposition(rule('&&', {
+        ...imports([
+            // layouts:
+            usesModalSideElementLayout(),
+            // variants:
+            usesModalSideElementVariants(),
+            // states:
+            usesModalSideElementStates(),
         ]),
-    ]),
-    compositionOf('actionBar', [
-        imports([
-            usesActionBarLayout(),
-        ]),
-    ]),
+    })),
+    compositionOf('actionBar', imports([
+        usesActionBarLayout(),
+    ])),
 ], /*sheetId :*/ 'qvp7n6e4ck'); // an unique salt for SSR support, ensures the server-side & client-side have the same generated class names
 export const usesModalSideLayout = () => {
-    return composition([
-        imports([
+    return style({
+        ...imports([
             // layouts:
             usesModalLayout(),
         ]),
-        layout({
+        ...style({
             // layouts:
             display: 'grid',
             // child default sizes:
@@ -180,79 +153,67 @@ export const usesModalSideLayout = () => {
             // customize:
             ...usesGeneralProps(cssProps), // apply general cssProps
         }),
-    ]);
+    });
 };
 export const usesModalSideVariants = () => {
     // dependencies:
     // layouts:
-    const [sizes] = usesSizeVariant((sizeName) => composition([
-        layout({
-            // overwrites propName = propName{SizeName}:
-            ...overwriteProps(cssDecls, usesSuffixedProps(cssProps, sizeName)),
-        }),
-    ]));
-    return composition([
-        imports([
+    const [sizes] = usesSizeVariant((sizeName) => style({
+        // overwrites propName = propName{SizeName}:
+        ...overwriteProps(cssDecls, usesSuffixedProps(cssProps, sizeName)),
+    }));
+    return style({
+        ...imports([
             // variants:
             usesModalVariants(),
             // layouts:
             sizes(),
         ]),
-        variants([
-            rule('.blockStart', [
-                layout({
-                    // layouts:
-                    // child default sizes:
-                    justifyItems: 'stretch',
-                    alignItems: 'start', // align top vertically
-                }),
-            ]),
-            rule('.blockEnd', [
-                layout({
-                    // layouts:
-                    // child default sizes:
-                    justifyItems: 'stretch',
-                    alignItems: 'end', // align top vertically
-                }),
-            ]),
-            rule('.inlineStart', [
-                layout({
-                    // layouts:
-                    // child default sizes:
-                    justifyItems: 'start',
-                    alignItems: 'stretch', // stretch    vertically
-                }),
-            ]),
-            rule('.inlineEnd', [
-                layout({
-                    // layouts:
-                    // child default sizes:
-                    justifyItems: 'end',
-                    alignItems: 'stretch', // stretch    vertically
-                }),
-            ]),
+        ...variants([
+            rule('.blockStart', {
+                // layouts:
+                // child default sizes:
+                justifyItems: 'stretch',
+                alignItems: 'start', // align top vertically
+            }),
+            rule('.blockEnd', {
+                // layouts:
+                // child default sizes:
+                justifyItems: 'stretch',
+                alignItems: 'end', // align top vertically
+            }),
+            rule('.inlineStart', {
+                // layouts:
+                // child default sizes:
+                justifyItems: 'start',
+                alignItems: 'stretch', // stretch    vertically
+            }),
+            rule('.inlineEnd', {
+                // layouts:
+                // child default sizes:
+                justifyItems: 'end',
+                alignItems: 'stretch', // stretch    vertically
+            }),
         ]),
-    ]);
+    });
 };
 export const usesModalSideStates = () => {
-    return composition([
-        imports([
+    return style({
+        ...imports([
             // states:
             usesModalStates(),
         ]),
-    ]);
+    });
 };
 export const useModalSideSheet = createUseSheet(() => [
-    mainComposition([
-        imports([
-            // layouts:
-            usesModalSideLayout(),
-            // variants:
-            usesModalSideVariants(),
-            // states:
-            usesModalSideStates(),
-        ]),
-    ]),
+    mainComposition(imports([
+        // layouts:
+        usesModalSideLayout(),
+        // variants:
+        usesModalSideVariants(),
+        // states:
+        usesModalSideStates(),
+    ])),
 ], /*sheetId :*/ 'g93sfdvlhc'); // an unique salt for SSR support, ensures the server-side & client-side have the same generated class names
 // configs:
 export const [cssProps, cssDecls, cssVals, cssConfig] = createCssConfig(() => {
@@ -274,7 +235,7 @@ export function ModalSideElement(props) {
     inheritActive, // from accessibilities, moved to Collapse
     tabIndex = -1, // from ModalElement   , moved to Card
     // actions:
-    onActiveChange, onExcitedChange, // not implemented
+    onActiveChange, onExcitedChange, 
     // children:
     header, ...restProps } = props;
     // handlers:

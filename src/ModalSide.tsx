@@ -6,22 +6,25 @@ import {
 // cssfn:
 import {
     // compositions:
-    composition,
     compositionOf,
     mainComposition,
+    
+    
+    
+    // styles:
+    style,
     imports,
     
     
     
-    // layouts:
-    layout,
-    children,
-    
-    
-    
     // rules:
-    variants,
     rule,
+    variants,
+    
+    
+    
+    //combinators:
+    children,
 }                           from '@cssfn/cssfn'       // cssfn core
 import {
     // hooks:
@@ -44,7 +47,6 @@ import {
     // hooks:
     usesSizeVariant,
     usesBorderRadius,
-    usesExcitedState,
     useExcitedState,
     TogglerExcitedProps,
 }                           from '@nodestrap/basic'
@@ -73,6 +75,7 @@ import {
     
     // styles:
     usesModalElementLayout,
+    usesModalElementStates,
     
     usesModalLayout,
     usesModalVariants,
@@ -117,12 +120,12 @@ export const useModalSideVariant = (props: ModalSideVariant) => {
 
 // styles:
 export const usesModalSideElementLayout = () => {
-    return composition([
-        imports([
+    return style({
+        ...imports([
             // layouts:
             usesModalElementLayout(),
         ]),
-        layout({
+        ...style({
             // layouts:
             display        : 'flex',
             flexDirection  : 'column',
@@ -132,36 +135,31 @@ export const usesModalSideElementLayout = () => {
             
             
             
-            // sizes:
-            boxSizing     : 'border-box', // the final size is including borders & paddings
-            inlineSize    : 'auto',       // follows the content's width, but
-            maxInlineSize : '100%',       // up to the maximum available parent's width
-            blockSize     : 'auto',       // follows the content's height, but
-            maxBlockSize  : '100%',       // up to the maximum available parent's height
-            overflow      : 'hidden',     // force the Card to scroll
+            // children:
+            ...children(['&', '*'], { // Popup & Card
+                // sizes:
+                boxSizing     : 'border-box',     // the final size is including borders & paddings
+                inlineSize    : 'auto',           // follows the content's width, but
+                maxInlineSize : '100%',           // up to the maximum available parent's width
+                blockSize     : 'auto',           // follows the content's height, but
+                maxBlockSize  : '100%',           // up to the maximum available parent's height
+                overflow      : 'hidden',         // force the Card to scroll
+            }),
             
             
             
             // children:
-            ...children('*', [ // Card
-                layout({
-                    // sizes:
-                    flex          : [[1, 1, '100%']], // growable, shrinkable, initial from parent's height
-                    
-                    boxSizing     : 'inherit',
-                    inlineSize    : 'inherit',
-                    maxInlineSize : 'inherit',
-                    blockSize     : 'inherit',
-                    maxBlockSize  : 'inherit',
-                    
-                    
-                    
-                    // customize:
-                    ...usesGeneralProps(usesPrefixedProps(cssProps, 'card')), // apply general cssProps starting with card***
-                }),
-            ]),
+            ...children('*', { // Card
+                // sizes:
+                flex          : [[1, 1, '100%']], // growable, shrinkable, initial from parent's height
+                
+                
+                
+                // customize:
+                ...usesGeneralProps(usesPrefixedProps(cssProps, 'card')), // apply general cssProps starting with card***
+            }),
         }),
-    ]);
+    });
 };
 export const usesModalSideElementVariants = () => {
     // dependencies:
@@ -171,112 +169,87 @@ export const usesModalSideElementVariants = () => {
     
     
     
-    return composition([
-        variants([
-            rule('.blockStart>&', [
-                layout({
-                    // children:
-                    ...children(['&', '*'], [ // Card
-                        layout({
-                            // borders:
-                            // remove rounded corners on top:
-                            [borderRadiusDecls.borderStartStartRadius] : '0px',
-                            [borderRadiusDecls.borderStartEndRadius  ] : '0px',
-                        }),
-                    ]),
+    return style({
+        ...variants([
+            rule('.blockStart>&', {
+                // children:
+                ...children(['&', '*'], { // Card
+                    // borders:
+                    // remove rounded corners on top:
+                    [borderRadiusDecls.borderStartStartRadius] : '0px',
+                    [borderRadiusDecls.borderStartEndRadius  ] : '0px',
                 }),
-            ]),
-            rule('.blockEnd>&', [
-                layout({
-                    // children:
-                    ...children(['&', '*'], [ // Card
-                        layout({
-                            // borders:
-                            // remove rounded corners on bottom:
-                            [borderRadiusDecls.borderEndStartRadius  ] : '0px',
-                            [borderRadiusDecls.borderEndEndRadius    ] : '0px',
-                        }),
-                    ]),
+            }),
+            rule('.blockEnd>&', {
+                // children:
+                ...children(['&', '*'], { // Card
+                    // borders:
+                    // remove rounded corners on bottom:
+                    [borderRadiusDecls.borderEndStartRadius  ] : '0px',
+                    [borderRadiusDecls.borderEndEndRadius    ] : '0px',
                 }),
-            ]),
-            rule('.inlineStart>&', [
-                layout({
-                    // children:
-                    ...children(['&', '*'], [ // Card
-                        layout({
-                            // borders:
-                            // remove rounded corners on left:
-                            [borderRadiusDecls.borderStartStartRadius] : '0px',
-                            [borderRadiusDecls.borderEndStartRadius  ] : '0px',
-                        }),
-                    ]),
+            }),
+            rule('.inlineStart>&', {
+                // children:
+                ...children(['&', '*'], { // Card
+                    // borders:
+                    // remove rounded corners on left:
+                    [borderRadiusDecls.borderStartStartRadius] : '0px',
+                    [borderRadiusDecls.borderEndStartRadius  ] : '0px',
                 }),
-            ]),
-            rule('.inlineEnd>&', [
-                layout({
-                    // children:
-                    ...children(['&', '*'], [ // Card
-                        layout({
-                            // borders:
-                            // remove rounded corners on right:
-                            [borderRadiusDecls.borderStartEndRadius  ] : '0px',
-                            [borderRadiusDecls.borderEndEndRadius    ] : '0px',
-                        }),
-                    ]),
+            }),
+            rule('.inlineEnd>&', {
+                // children:
+                ...children(['&', '*'], { // Card
+                    // borders:
+                    // remove rounded corners on right:
+                    [borderRadiusDecls.borderStartEndRadius  ] : '0px',
+                    [borderRadiusDecls.borderEndEndRadius    ] : '0px',
                 }),
-            ]),
+            }),
         ]),
-    ]);
+    });
 };
 export const usesModalSideElementStates = () => {
-    // dependencies:
-    
-    // states:
-    const [excited]   = usesExcitedState();
-    
-    
-    
-    return composition([
-        imports([
+    return style({
+        ...imports([
             // states:
-            excited(),
+            usesModalElementStates(),
         ]),
-    ]);
+    });
 };
 
 export const useModalSideElementSheet = createUseSheet(() => [
-    mainComposition([
-        variants([
-            rule('&&', [ // makes `.ModalSideElement` is more specific than `.Collapse`
-                imports([
-                    // layouts:
-                    usesModalSideElementLayout(),
-                    
-                    // variants:
-                    usesModalSideElementVariants(),
-                    
-                    // states:
-                    usesModalSideElementStates(),
-                ]),
+    mainComposition(
+        rule('&&', { // makes `.ModalSideElement` is more specific than `.Collapse`
+            ...imports([
+                // layouts:
+                usesModalSideElementLayout(),
+                
+                // variants:
+                usesModalSideElementVariants(),
+                
+                // states:
+                usesModalSideElementStates(),
             ]),
-        ]),
-    ]),
-    compositionOf('actionBar', [
+        }),
+    ),
+    compositionOf('actionBar',
         imports([
             usesActionBarLayout(),
         ]),
-    ]),
+    ),
 ], /*sheetId :*/'qvp7n6e4ck'); // an unique salt for SSR support, ensures the server-side & client-side have the same generated class names
 
 
 
 export const usesModalSideLayout = () => {
-    return composition([
-        imports([
+    return style({
+        ...imports([
             // layouts:
             usesModalLayout(),
         ]),
-        layout({
+        ...style({
             // layouts:
             display      : 'grid',    // use a grid for the layout, so we can align the Card both horizontally & vertically
             
@@ -289,80 +262,70 @@ export const usesModalSideLayout = () => {
             // customize:
             ...usesGeneralProps(cssProps), // apply general cssProps
         }),
-    ]);
+    });
 };
 export const usesModalSideVariants = () => {
     // dependencies:
     
     // layouts:
-    const [sizes] = usesSizeVariant((sizeName) => composition([
-        layout({
-            // overwrites propName = propName{SizeName}:
-            ...overwriteProps(cssDecls, usesSuffixedProps(cssProps, sizeName)),
-        }),
-    ]));
+    const [sizes] = usesSizeVariant((sizeName) => style({
+        // overwrites propName = propName{SizeName}:
+        ...overwriteProps(cssDecls, usesSuffixedProps(cssProps, sizeName)),
+    }));
     
     
     
-    return composition([
-        imports([
+    return style({
+        ...imports([
             // variants:
             usesModalVariants(),
             
             // layouts:
             sizes(),
         ]),
-        variants([
-            rule('.blockStart', [
-                layout({
-                    // layouts:
-                    
-                    // child default sizes:
-                    justifyItems : 'stretch', // stretch   horizontally
-                    alignItems   : 'start',   // align top vertically
-                }),
-            ]),
-            rule('.blockEnd', [
-                layout({
-                    // layouts:
-                    
-                    // child default sizes:
-                    justifyItems : 'stretch', // stretch   horizontally
-                    alignItems   : 'end',     // align top vertically
-                }),
-            ]),
-            rule('.inlineStart', [
-                layout({
-                    // layouts:
-                    
-                    // child default sizes:
-                    justifyItems : 'start',   // align left horizontally
-                    alignItems   : 'stretch', // stretch    vertically
-                }),
-            ]),
-            rule('.inlineEnd', [
-                layout({
-                    // layouts:
-                    
-                    // child default sizes:
-                    justifyItems : 'end',     // align left horizontally
-                    alignItems   : 'stretch', // stretch    vertically
-                }),
-            ]),
+        ...variants([
+            rule('.blockStart', {
+                // layouts:
+                
+                // child default sizes:
+                justifyItems : 'stretch', // stretch   horizontally
+                alignItems   : 'start',   // align top vertically
+            }),
+            rule('.blockEnd', {
+                // layouts:
+                
+                // child default sizes:
+                justifyItems : 'stretch', // stretch   horizontally
+                alignItems   : 'end',     // align top vertically
+            }),
+            rule('.inlineStart', {
+                // layouts:
+                
+                // child default sizes:
+                justifyItems : 'start',   // align left horizontally
+                alignItems   : 'stretch', // stretch    vertically
+            }),
+            rule('.inlineEnd', {
+                // layouts:
+                
+                // child default sizes:
+                justifyItems : 'end',     // align left horizontally
+                alignItems   : 'stretch', // stretch    vertically
+            }),
         ]),
-    ]);
+    });
 };
 export const usesModalSideStates = () => {
-    return composition([
-        imports([
+    return style({
+        ...imports([
             // states:
             usesModalStates(),
         ]),
-    ]);
+    });
 };
 
 export const useModalSideSheet = createUseSheet(() => [
-    mainComposition([
+    mainComposition(
         imports([
             // layouts:
             usesModalSideLayout(),
@@ -373,7 +336,7 @@ export const useModalSideSheet = createUseSheet(() => [
             // states:
             usesModalSideStates(),
         ]),
-    ]),
+    ),
 ], /*sheetId :*/'g93sfdvlhc'); // an unique salt for SSR support, ensures the server-side & client-side have the same generated class names
 
 
@@ -430,7 +393,7 @@ export function ModalSideElement<TElement extends HTMLElement = HTMLElement, TCl
         
         // actions:
         onActiveChange,
-        onExcitedChange, // not implemented
+        onExcitedChange,
         
         
         // children:

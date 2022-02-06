@@ -10,13 +10,13 @@ export interface ModalSideVariant {
 export declare const useModalSideVariant: (props: ModalSideVariant) => {
     class: ModalSideStyle;
 };
-export declare const usesModalSideElementLayout: () => import("@cssfn/cssfn").StyleCollection;
-export declare const usesModalSideElementVariants: () => import("@cssfn/cssfn").StyleCollection;
-export declare const usesModalSideElementStates: () => import("@cssfn/cssfn").StyleCollection;
+export declare const usesModalSideElementLayout: () => import("@cssfn/cssfn").Rule;
+export declare const usesModalSideElementVariants: () => import("@cssfn/cssfn").Rule;
+export declare const usesModalSideElementStates: () => import("@cssfn/cssfn").Rule;
 export declare const useModalSideElementSheet: import("@cssfn/types").Factory<import("jss").Classes<"main" | "actionBar">>;
-export declare const usesModalSideLayout: () => import("@cssfn/cssfn").StyleCollection;
-export declare const usesModalSideVariants: () => import("@cssfn/cssfn").StyleCollection;
-export declare const usesModalSideStates: () => import("@cssfn/cssfn").StyleCollection;
+export declare const usesModalSideLayout: () => import("@cssfn/cssfn").Rule;
+export declare const usesModalSideVariants: () => import("@cssfn/cssfn").Rule;
+export declare const usesModalSideStates: () => import("@cssfn/cssfn").Rule;
 export declare const useModalSideSheet: import("@cssfn/types").Factory<import("jss").Classes<"main">>;
 export declare const cssProps: import("@cssfn/css-config").Refs<{}>, cssDecls: import("@cssfn/css-config").Decls<{}>, cssVals: import("@cssfn/css-config").Vals<{}>, cssConfig: import("@cssfn/css-config").CssConfigSettings;
 export declare type ModalSideCloseType = ModalCardCloseType;
