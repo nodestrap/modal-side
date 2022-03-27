@@ -68,24 +68,23 @@ import {
 }                           from '@nodestrap/collapse'
 import {
     // hooks:
-    ModalStyle,
-    ModalVariant,
+    BackdropStyle,
+    BackdropVariant,
     
     
     
     // styles:
-    usesModalElementLayout,
-    usesModalElementStates,
+    usesDialogLayout,
+    usesDialogStates,
     
-    usesModalLayout,
-    usesModalVariants,
-    usesModalStates,
+    usesBackdropLayout,
+    usesBackdropVariants,
+    usesBackdropStates,
     
     
     
     // react components:
-    ModalElementProps,
-    ModalElement,
+    DialogProps,
     
     ModalProps,
     Modal,
@@ -110,47 +109,48 @@ export type ModalSideStyle = 'inlineStart'|'inlineEnd'|'blockStart'|'blockEnd' /
 export interface ModalSideVariant {
     modalSideStyle? : ModalSideStyle
 }
-export const useModalSideVariant = (props: ModalSideVariant) => {
+export const useModalSideVariant = ({ modalSideStyle }: ModalSideVariant) => {
     return {
-        class : props.modalSideStyle ? props.modalSideStyle : 'inlineStart',
+        class : modalSideStyle ? modalSideStyle : 'inlineStart',
     };
 };
 
 
 
 // styles:
-export const usesModalSideElementLayout = () => {
+export const usesSideDialogLayout = () => {
     return style({
         ...imports([
             // layouts:
-            usesModalElementLayout(),
+            usesDialogLayout(),
         ]),
         ...style({
             // layouts:
             display        : 'flex',
             flexDirection  : 'column',
-            justifyContent : 'start',   // if Card is not growable, the excess space (if any) placed at the end, and if no sufficient space available => the Card's header should be visible first
-            alignItems     : 'stretch', // stretch Card horizontally
+            justifyContent : 'start',   // if <Card> is not growable, the excess space (if any) placed at the end, and if no sufficient space available => the <Card>'s header should be visible first
+            alignItems     : 'stretch', // stretch <Card> horizontally
             flexWrap       : 'nowrap',  // no wrapping
             
             
             
             // children:
-            ...children(['&', '*'], { // Popup & Card
+            ...children(['&', '*'], { // <Collapse> & <Card>
                 // sizes:
                 boxSizing     : 'border-box',     // the final size is including borders & paddings
                 inlineSize    : 'auto',           // follows the content's width, but
                 maxInlineSize : '100%',           // up to the maximum available parent's width
                 blockSize     : 'auto',           // follows the content's height, but
                 maxBlockSize  : '100%',           // up to the maximum available parent's height
-                overflow      : 'hidden',         // force the Card to scroll
+                overflow      : 'hidden',         // force the <Card> to scroll
             }),
             
             
             
             // children:
-            ...children('*', { // Card
+            ...children('*', { // <Card>
                 // sizes:
+                // maximum height of <Card> when side-left & side-right
                 flex          : [[1, 1, '100%']], // growable, shrinkable, initial from parent's height
                 
                 
@@ -161,7 +161,7 @@ export const usesModalSideElementLayout = () => {
         }),
     });
 };
-export const usesModalSideElementVariants = () => {
+export const usesSideDialogVariants = () => {
     // dependencies:
     
     // borders:
@@ -173,7 +173,7 @@ export const usesModalSideElementVariants = () => {
         ...variants([
             rule('.blockStart>&', {
                 // children:
-                ...children(['&', '*'], { // Card
+                ...children(['&', '*'], { // <Collapse> & <Card>
                     // borders:
                     // remove rounded corners on top:
                     [borderRadiusDecls.borderStartStartRadius] : '0px',
@@ -182,7 +182,7 @@ export const usesModalSideElementVariants = () => {
             }),
             rule('.blockEnd>&', {
                 // children:
-                ...children(['&', '*'], { // Card
+                ...children(['&', '*'], { // <Collapse> & <Card>
                     // borders:
                     // remove rounded corners on bottom:
                     [borderRadiusDecls.borderEndStartRadius  ] : '0px',
@@ -191,7 +191,7 @@ export const usesModalSideElementVariants = () => {
             }),
             rule('.inlineStart>&', {
                 // children:
-                ...children(['&', '*'], { // Card
+                ...children(['&', '*'], { // <Collapse> & <Card>
                     // borders:
                     // remove rounded corners on left:
                     [borderRadiusDecls.borderStartStartRadius] : '0px',
@@ -200,7 +200,7 @@ export const usesModalSideElementVariants = () => {
             }),
             rule('.inlineEnd>&', {
                 // children:
-                ...children(['&', '*'], { // Card
+                ...children(['&', '*'], { // <Collapse> & <Card>
                     // borders:
                     // remove rounded corners on right:
                     [borderRadiusDecls.borderStartEndRadius  ] : '0px',
@@ -210,27 +210,27 @@ export const usesModalSideElementVariants = () => {
         ]),
     });
 };
-export const usesModalSideElementStates = () => {
+export const usesSideDialogStates = () => {
     return style({
         ...imports([
             // states:
-            usesModalElementStates(),
+            usesDialogStates(),
         ]),
     });
 };
 
-export const useModalSideElementSheet = createUseSheet(() => [
+export const useSideDialogSheet = createUseSheet(() => [
     mainComposition(
-        rule('&&', { // makes `.ModalSideElement` is more specific than `.Collapse`
+        rule('&&', { // makes `.SideDialog` is more specific than `.Collapse`
             ...imports([
                 // layouts:
-                usesModalSideElementLayout(),
+                usesSideDialogLayout(),
                 
                 // variants:
-                usesModalSideElementVariants(),
+                usesSideDialogVariants(),
                 
                 // states:
-                usesModalSideElementStates(),
+                usesSideDialogStates(),
             ]),
         }),
     ),
@@ -243,15 +243,15 @@ export const useModalSideElementSheet = createUseSheet(() => [
 
 
 
-export const usesModalSideLayout = () => {
+export const usesSideBackdropLayout = () => {
     return style({
         ...imports([
             // layouts:
-            usesModalLayout(),
+            usesBackdropLayout(),
         ]),
         ...style({
             // layouts:
-            display      : 'grid',    // use a grid for the layout, so we can align the Card both horizontally & vertically
+            display      : 'grid',    // use a grid for the layout, so we can align the <Card> both horizontally & vertically
             
             // child default sizes:
          // justifyItems : 'start',   // align left horizontally // already defined in variant `.(inline|block)(Start|End)`
@@ -264,7 +264,7 @@ export const usesModalSideLayout = () => {
         }),
     });
 };
-export const usesModalSideVariants = () => {
+export const usesSideBackdropVariants = () => {
     // dependencies:
     
     // layouts:
@@ -278,7 +278,7 @@ export const usesModalSideVariants = () => {
     return style({
         ...imports([
             // variants:
-            usesModalVariants(),
+            usesBackdropVariants(),
             
             // layouts:
             sizes(),
@@ -315,26 +315,26 @@ export const usesModalSideVariants = () => {
         ]),
     });
 };
-export const usesModalSideStates = () => {
+export const usesSideBackdropStates = () => {
     return style({
         ...imports([
             // states:
-            usesModalStates(),
+            usesBackdropStates(),
         ]),
     });
 };
 
-export const useModalSideSheet = createUseSheet(() => [
+export const useSideBackdropSheet = createUseSheet(() => [
     mainComposition(
         imports([
             // layouts:
-            usesModalSideLayout(),
+            usesSideBackdropLayout(),
             
             // variants:
-            usesModalSideVariants(),
+            usesSideBackdropVariants(),
             
             // states:
-            usesModalSideStates(),
+            usesSideBackdropStates(),
         ]),
     ),
 ], /*sheetId :*/'g93sfdvlhc'); // an unique salt for SSR support, ensures the server-side & client-side have the same generated class names
@@ -356,21 +356,21 @@ export type ModalSideCloseType = ModalCardCloseType
 
 
 
-export interface ModalSideElementProps<TElement extends HTMLElement = HTMLElement, TCloseType = ModalSideCloseType>
+export interface SideDialogProps<TElement extends HTMLElement = HTMLElement, TCloseType = ModalSideCloseType>
     extends
-        ModalElementProps<TElement, TCloseType>,
+        DialogProps<TElement, TCloseType>,
         CardProps<TElement>,
         
-        // states:
-        TogglerExcitedProps,
-        
         // appearances:
-        ModalSideVariant
+        ModalSideVariant,
+        
+        // states:
+        TogglerExcitedProps
 {
 }
-export function ModalSideElement<TElement extends HTMLElement = HTMLElement, TCloseType = ModalSideCloseType>(props: ModalSideElementProps<TElement, TCloseType>) {
+export function SideDialog<TElement extends HTMLElement = HTMLElement, TCloseType = ModalSideCloseType>(props: SideDialogProps<TElement, TCloseType>) {
     // styles:
-    const sheet        = useModalSideElementSheet();
+    const sheet        = useSideDialogSheet();
     
     
     
@@ -382,22 +382,24 @@ export function ModalSideElement<TElement extends HTMLElement = HTMLElement, TCl
     // rest props:
     const {
         // essentials:
-        elmRef,         // moved to Card
+        elmRef,          // moved to <Card>
         
         
         // accessibilities:
-        active,         // from accessibilities, moved to Collapse
-        inheritActive,  // from accessibilities, moved to Collapse
-        tabIndex = -1,  // from ModalElement   , moved to Card
+        isModal,         // moved to <Collapse>
+        isVisible,       // moved to <Collapse>
+        tabIndex = -1,   // moved to <Card>
+        active,          // moved to <Collapse>
+        inheritActive,   // moved to <Collapse>
         
         
         // actions:
-        onActiveChange,
-        onExcitedChange,
+        onActiveChange,  // implemented
+        onExcitedChange, // not implemented
         
         
         // children:
-        header,
+        header,          // changed the default
     ...restProps} = props;
     
     
@@ -443,24 +445,28 @@ export function ModalSideElement<TElement extends HTMLElement = HTMLElement, TCl
     // jsx:
     return (
         <Collapse<TElement>
-            // accessibilities:
+            // semantics:
+            semanticTag ={props.semanticTag   ?? 'dialog'}
+            semanticRole={props.semanticRole  ?? 'dialog'}
+            aria-modal={isModal}
             {...{
-                active,
-                inheritActive,
+                open : isVisible,
             }}
+            
+            
+            // accessibilities:
+            active={active}
+            inheritActive={inheritActive}
             
             
             // layouts:
             orientation={props.modalSideStyle?.startsWith('block') ? 'block' : 'inline'}
-            
-            
-            // appearances:
             nude={true}
             
             
             // classes:
             classes={[
-                sheet.main, // inject ModalSideElement class
+                sheet.main, // inject SideDialog class
             ]}
             stateClasses={[...(props.stateClasses ?? []),
                 excitedState.class,
@@ -494,19 +500,18 @@ export function ModalSideElement<TElement extends HTMLElement = HTMLElement, TCl
         </Collapse>
     );
 }
-ModalSideElement.prototype = ModalElement.prototype; // mark as ModalElement compatible
 
 
 
 export interface ModalSideProps<TElement extends HTMLElement = HTMLElement, TCloseType = ModalSideCloseType>
     extends
         ModalProps<TElement, TCloseType>,
-        ModalSideElementProps<TElement, TCloseType>
+        SideDialogProps<TElement, TCloseType>
 {
 }
 export function ModalSide<TElement extends HTMLElement = HTMLElement, TCloseType = ModalSideCloseType>(props: ModalSideProps<TElement, TCloseType>) {
     // styles:
-    const sheet              = useModalSideSheet();
+    const sheet              = useSideBackdropSheet();
     
     
     
@@ -515,11 +520,43 @@ export function ModalSide<TElement extends HTMLElement = HTMLElement, TCloseType
     
     
     
+    // rest props:
+    const {
+        // components:
+        dialog = <SideDialog<TElement, TCloseType> />,
+        
+        
+        // ModalSideVariant:
+        modalSideStyle,
+        
+        
+        // children:
+        header,
+        footer,
+        children,
+    ...restBackdropProps} = props;
+    
+    
+    
     // jsx:
+    const defaultDialogProps : SideDialogProps<TElement, TCloseType> = {
+        // ModalSideVariant:
+        modalSideStyle,
+        
+        
+        // children:
+        header,
+        footer,
+        children,
+    };
     return (
         <Modal<TElement, TCloseType>
             // other props:
-            {...props}
+            {...restBackdropProps}
+            
+            
+            // components:
+            dialog={React.cloneElement(React.cloneElement(dialog, defaultDialogProps), dialog.props)}
             
             
             // classes:
@@ -527,16 +564,11 @@ export function ModalSide<TElement extends HTMLElement = HTMLElement, TCloseType
             variantClasses={[...(props.variantClasses ?? []),
                 modalSideVariant.class,
             ]}
-        >
-            <ModalSideElement<TElement, TCloseType>
-                // other props:
-                {...props}
-            />
-        </Modal>
+        />
     );
 }
 export { ModalSide as default }
 
 export type { OrientationName, OrientationVariant }
 
-export type { ModalStyle, ModalVariant }
+export type { BackdropStyle, BackdropVariant }

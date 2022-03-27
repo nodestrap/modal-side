@@ -27,21 +27,21 @@ import {
 Collapse, } from '@nodestrap/collapse';
 import { 
 // styles:
-usesModalElementLayout, usesModalElementStates, usesModalLayout, usesModalVariants, usesModalStates, ModalElement, Modal, } from '@nodestrap/modal';
+usesDialogLayout, usesDialogStates, usesBackdropLayout, usesBackdropVariants, usesBackdropStates, Modal, } from '@nodestrap/modal';
 import { 
 // styles:
 usesActionBarLayout, } from '@nodestrap/modal-card';
-export const useModalSideVariant = (props) => {
+export const useModalSideVariant = ({ modalSideStyle }) => {
     return {
-        class: props.modalSideStyle ? props.modalSideStyle : 'inlineStart',
+        class: modalSideStyle ? modalSideStyle : 'inlineStart',
     };
 };
 // styles:
-export const usesModalSideElementLayout = () => {
+export const usesSideDialogLayout = () => {
     return style({
         ...imports([
             // layouts:
-            usesModalElementLayout(),
+            usesDialogLayout(),
         ]),
         ...style({
             // layouts:
@@ -58,11 +58,12 @@ export const usesModalSideElementLayout = () => {
                 maxInlineSize: '100%',
                 blockSize: 'auto',
                 maxBlockSize: '100%',
-                overflow: 'hidden', // force the Card to scroll
+                overflow: 'hidden', // force the <Card> to scroll
             }),
             // children:
             ...children('*', {
                 // sizes:
+                // maximum height of <Card> when side-left & side-right
                 flex: [[1, 1, '100%']],
                 // customize:
                 ...usesGeneralProps(usesPrefixedProps(cssProps, 'card')), // apply general cssProps starting with card***
@@ -70,7 +71,7 @@ export const usesModalSideElementLayout = () => {
         }),
     });
 };
-export const usesModalSideElementVariants = () => {
+export const usesSideDialogVariants = () => {
     // dependencies:
     // borders:
     const [, , borderRadiusDecls] = usesBorderRadius();
@@ -115,34 +116,34 @@ export const usesModalSideElementVariants = () => {
         ]),
     });
 };
-export const usesModalSideElementStates = () => {
+export const usesSideDialogStates = () => {
     return style({
         ...imports([
             // states:
-            usesModalElementStates(),
+            usesDialogStates(),
         ]),
     });
 };
-export const useModalSideElementSheet = createUseSheet(() => [
+export const useSideDialogSheet = createUseSheet(() => [
     mainComposition(rule('&&', {
         ...imports([
             // layouts:
-            usesModalSideElementLayout(),
+            usesSideDialogLayout(),
             // variants:
-            usesModalSideElementVariants(),
+            usesSideDialogVariants(),
             // states:
-            usesModalSideElementStates(),
+            usesSideDialogStates(),
         ]),
     })),
     compositionOf('actionBar', imports([
         usesActionBarLayout(),
     ])),
 ], /*sheetId :*/ 'qvp7n6e4ck'); // an unique salt for SSR support, ensures the server-side & client-side have the same generated class names
-export const usesModalSideLayout = () => {
+export const usesSideBackdropLayout = () => {
     return style({
         ...imports([
             // layouts:
-            usesModalLayout(),
+            usesBackdropLayout(),
         ]),
         ...style({
             // layouts:
@@ -155,7 +156,7 @@ export const usesModalSideLayout = () => {
         }),
     });
 };
-export const usesModalSideVariants = () => {
+export const usesSideBackdropVariants = () => {
     // dependencies:
     // layouts:
     const [sizes] = usesSizeVariant((sizeName) => style({
@@ -165,7 +166,7 @@ export const usesModalSideVariants = () => {
     return style({
         ...imports([
             // variants:
-            usesModalVariants(),
+            usesBackdropVariants(),
             // layouts:
             sizes(),
         ]),
@@ -197,22 +198,22 @@ export const usesModalSideVariants = () => {
         ]),
     });
 };
-export const usesModalSideStates = () => {
+export const usesSideBackdropStates = () => {
     return style({
         ...imports([
             // states:
-            usesModalStates(),
+            usesBackdropStates(),
         ]),
     });
 };
-export const useModalSideSheet = createUseSheet(() => [
+export const useSideBackdropSheet = createUseSheet(() => [
     mainComposition(imports([
         // layouts:
-        usesModalSideLayout(),
+        usesSideBackdropLayout(),
         // variants:
-        usesModalSideVariants(),
+        usesSideBackdropVariants(),
         // states:
-        usesModalSideStates(),
+        usesSideBackdropStates(),
     ])),
 ], /*sheetId :*/ 'g93sfdvlhc'); // an unique salt for SSR support, ensures the server-side & client-side have the same generated class names
 // configs:
@@ -221,23 +222,27 @@ export const [cssProps, cssDecls, cssVals, cssConfig] = createCssConfig(() => {
     /* no config props yet */
     };
 }, { prefix: 'mdlsde' });
-export function ModalSideElement(props) {
+export function SideDialog(props) {
     // styles:
-    const sheet = useModalSideElementSheet();
+    const sheet = useSideDialogSheet();
     // states:
     const excitedState = useExcitedState(props);
     // rest props:
     const { 
     // essentials:
-    elmRef, // moved to Card
+    elmRef, // moved to <Card>
     // accessibilities:
-    active, // from accessibilities, moved to Collapse
-    inheritActive, // from accessibilities, moved to Collapse
-    tabIndex = -1, // from ModalElement   , moved to Card
+    isModal, // moved to <Collapse>
+    isVisible, // moved to <Collapse>
+    tabIndex = -1, // moved to <Card>
+    active, // moved to <Collapse>
+    inheritActive, // moved to <Collapse>
     // actions:
-    onActiveChange, onExcitedChange, 
+    onActiveChange, // implemented
+    onExcitedChange, // not implemented
     // children:
-    header, ...restProps } = props;
+    header, // changed the default
+    ...restProps } = props;
     // handlers:
     const handleClose = onActiveChange && ((e) => {
         if (!e.defaultPrevented) {
@@ -264,17 +269,18 @@ export function ModalSideElement(props) {
         return header;
     })();
     // jsx:
-    return (React.createElement(Collapse, { ...{
-            active,
-            inheritActive,
+    return (React.createElement(Collapse, { 
+        // semantics:
+        semanticTag: props.semanticTag ?? 'dialog', semanticRole: props.semanticRole ?? 'dialog', "aria-modal": isModal, ...{
+            open: isVisible,
         }, 
+        // accessibilities:
+        active: active, inheritActive: inheritActive, 
         // layouts:
-        orientation: props.modalSideStyle?.startsWith('block') ? 'block' : 'inline', 
-        // appearances:
-        nude: true, 
+        orientation: props.modalSideStyle?.startsWith('block') ? 'block' : 'inline', nude: true, 
         // classes:
         classes: [
-            sheet.main, // inject ModalSideElement class
+            sheet.main, // inject SideDialog class
         ], stateClasses: [...(props.stateClasses ?? []),
             excitedState.class,
         ], 
@@ -291,18 +297,34 @@ export function ModalSideElement(props) {
             // children:
             header: headerFn })));
 }
-ModalSideElement.prototype = ModalElement.prototype; // mark as ModalElement compatible
 export function ModalSide(props) {
     // styles:
-    const sheet = useModalSideSheet();
+    const sheet = useSideBackdropSheet();
     // variants:
     const modalSideVariant = useModalSideVariant(props);
+    // rest props:
+    const { 
+    // components:
+    dialog = React.createElement(SideDialog, null), 
+    // ModalSideVariant:
+    modalSideStyle, 
+    // children:
+    header, footer, children, ...restBackdropProps } = props;
     // jsx:
-    return (React.createElement(Modal, { ...props, 
+    const defaultDialogProps = {
+        // ModalSideVariant:
+        modalSideStyle,
+        // children:
+        header,
+        footer,
+        children,
+    };
+    return (React.createElement(Modal, { ...restBackdropProps, 
+        // components:
+        dialog: React.cloneElement(React.cloneElement(dialog, defaultDialogProps), dialog.props), 
         // classes:
         mainClass: props.mainClass ?? sheet.main, variantClasses: [...(props.variantClasses ?? []),
             modalSideVariant.class,
-        ] },
-        React.createElement(ModalSideElement, { ...props })));
+        ] }));
 }
 export { ModalSide as default };
