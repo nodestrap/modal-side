@@ -42,13 +42,22 @@ import {
     overwriteProps,
 }                           from '@cssfn/css-config'  // Stores & retrieves configuration using *css custom properties* (css variables)
 
+// nodestrap utilities:
+import {
+    // utilities:
+    setRef,
+}                           from '@nodestrap/utilities'
+
 // nodestrap components:
+import type {
+    // react components:
+    ElementProps,
+}                           from '@nodestrap/element'
 import {
     // hooks:
     usesSizeVariant,
     usesBorderRadius,
     useExcitedState,
-    TogglerExcitedProps,
 }                           from '@nodestrap/basic'
 import CloseButton          from '@nodestrap/close-button'
 import {
@@ -362,11 +371,10 @@ export interface SideDialogProps<TElement extends HTMLElement = HTMLElement, TCl
         CardProps<TElement>,
         
         // appearances:
-        ModalSideVariant,
-        
-        // states:
-        TogglerExcitedProps
+        ModalSideVariant
 {
+    // components:
+    card? : React.ReactComponentElement<any, ElementProps>
 }
 export function SideDialog<TElement extends HTMLElement = HTMLElement, TCloseType = ModalSideCloseType>(props: SideDialogProps<TElement, TCloseType>) {
     // styles:
@@ -382,25 +390,34 @@ export function SideDialog<TElement extends HTMLElement = HTMLElement, TCloseTyp
     // rest props:
     const {
         // essentials:
-        elmRef,          // moved to <Card>
+        elmRef,                   // injected to <Card>
+        
+        
+        // semantics:
+        semanticTag,              // moved to <Collapse>
+        semanticRole,             // moved to <Collapse>
+        'aria-modal' : ariaModal, // moved to <Collapse>
         
         
         // accessibilities:
-        isModal,         // moved to <Collapse>
-        isVisible,       // moved to <Collapse>
-        tabIndex = -1,   // moved to <Card>
-        active,          // moved to <Collapse>
-        inheritActive,   // moved to <Collapse>
+        active,                   // moved to <Collapse>
+        inheritActive,            // moved to <Collapse>
+        isVisible,                // moved to <Collapse>
+        tabIndex = -1,            // added to <Card>
         
         
         // actions:
-        onActiveChange,  // implemented
-        onExcitedChange, // not implemented
+        onExcitedChange,          // not implemented
+        onActiveChange,           // implemented
+        
+        
+        // components:
+        card = <Card<TElement> />,
         
         
         // children:
-        header,          // changed the default
-    ...restProps} = props;
+        header,                   // changed the default
+    ...restCardProps} = props;
     
     
     
@@ -443,12 +460,34 @@ export function SideDialog<TElement extends HTMLElement = HTMLElement, TCloseTyp
     
     
     // jsx:
+    const defaultCardProps : CardProps<TElement> = {
+        // other props:
+        ...restCardProps,
+        
+        
+        // essentials:
+        elmRef : !card.props.elmRef ? elmRef : (elm) => {
+            setRef(card.props.elmRef, elm);
+            
+            setRef(elmRef, elm);
+        },
+        
+        
+        // accessibilities:
+        ...{
+            tabIndex,
+        },
+        
+        
+        // children:
+        header : headerFn,
+    };
     return (
         <Collapse<TElement>
             // semantics:
-            semanticTag ={props.semanticTag   ?? 'dialog'}
-            semanticRole={props.semanticRole  ?? 'dialog'}
-            aria-modal={isModal}
+            semanticTag ={semanticTag}
+            semanticRole={semanticRole}
+            aria-modal={ariaModal}
             {...{
                 open : isVisible,
             }}
@@ -468,7 +507,7 @@ export function SideDialog<TElement extends HTMLElement = HTMLElement, TCloseTyp
             classes={[
                 sheet.main, // inject SideDialog class
             ]}
-            stateClasses={[...(props.stateClasses ?? []),
+            stateClasses={[
                 excitedState.class,
             ]}
             
@@ -479,24 +518,7 @@ export function SideDialog<TElement extends HTMLElement = HTMLElement, TCloseTyp
                 excitedState.handleAnimationEnd(e);
             }}
         >
-            <Card<TElement>
-                // other props:
-                {...restProps}
-                
-                
-                // essentials:
-                elmRef={elmRef}
-                
-                
-                // accessibilities:
-                {...{
-                    tabIndex,
-                }}
-                
-                
-                // children:
-                header={headerFn}
-            />
+            { React.cloneElement(React.cloneElement(card, defaultCardProps), card.props) }
         </Collapse>
     );
 }
@@ -522,12 +544,12 @@ export function ModalSide<TElement extends HTMLElement = HTMLElement, TCloseType
     
     // rest props:
     const {
-        // components:
-        dialog = <SideDialog<TElement, TCloseType> />,
-        
-        
         // ModalSideVariant:
         modalSideStyle,
+        
+        
+        // components:
+        card,
         
         
         // children:
@@ -539,24 +561,10 @@ export function ModalSide<TElement extends HTMLElement = HTMLElement, TCloseType
     
     
     // jsx:
-    const defaultDialogProps : SideDialogProps<TElement, TCloseType> = {
-        // ModalSideVariant:
-        modalSideStyle,
-        
-        
-        // children:
-        header,
-        footer,
-        children,
-    };
     return (
         <Modal<TElement, TCloseType>
             // other props:
             {...restBackdropProps}
-            
-            
-            // components:
-            dialog={React.cloneElement(React.cloneElement(dialog, defaultDialogProps), dialog.props)}
             
             
             // classes:
@@ -564,7 +572,23 @@ export function ModalSide<TElement extends HTMLElement = HTMLElement, TCloseType
             variantClasses={[...(props.variantClasses ?? []),
                 modalSideVariant.class,
             ]}
-        />
+        >
+            <SideDialog<TElement, TCloseType>
+                // ModalSideVariant:
+                modalSideStyle={modalSideStyle}
+                
+                
+                // components:
+                card={card}
+                
+                
+                // children:
+                header={header}
+                footer={footer}
+            >
+                { children }
+            </SideDialog>
+        </Modal>
     );
 }
 export { ModalSide as default }

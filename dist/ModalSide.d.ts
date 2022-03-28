@@ -1,5 +1,5 @@
-/// <reference types="react" />
-import { TogglerExcitedProps } from '@nodestrap/basic';
+import { default as React } from 'react';
+import type { ElementProps } from '@nodestrap/element';
 import { OrientationName, OrientationVariant, CardProps } from '@nodestrap/card';
 import { BackdropStyle, BackdropVariant, DialogProps, ModalProps } from '@nodestrap/modal';
 import { ModalCardCloseType } from '@nodestrap/modal-card';
@@ -20,7 +20,8 @@ export declare const usesSideBackdropStates: () => import("@cssfn/cssfn").Rule;
 export declare const useSideBackdropSheet: import("@cssfn/types").Factory<import("jss").Classes<"main">>;
 export declare const cssProps: import("@cssfn/css-config").Refs<{}>, cssDecls: import("@cssfn/css-config").Decls<{}>, cssVals: import("@cssfn/css-config").Vals<{}>, cssConfig: import("@cssfn/css-config").CssConfigSettings;
 export declare type ModalSideCloseType = ModalCardCloseType;
-export interface SideDialogProps<TElement extends HTMLElement = HTMLElement, TCloseType = ModalSideCloseType> extends DialogProps<TElement, TCloseType>, CardProps<TElement>, ModalSideVariant, TogglerExcitedProps {
+export interface SideDialogProps<TElement extends HTMLElement = HTMLElement, TCloseType = ModalSideCloseType> extends DialogProps<TElement, TCloseType>, CardProps<TElement>, ModalSideVariant {
+    card?: React.ReactComponentElement<any, ElementProps>;
 }
 export declare function SideDialog<TElement extends HTMLElement = HTMLElement, TCloseType = ModalSideCloseType>(props: SideDialogProps<TElement, TCloseType>): JSX.Element;
 export interface ModalSideProps<TElement extends HTMLElement = HTMLElement, TCloseType = ModalSideCloseType> extends ModalProps<TElement, TCloseType>, SideDialogProps<TElement, TCloseType> {

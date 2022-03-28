@@ -16,7 +16,10 @@ createUseSheet, } from '@cssfn/react-cssfn'; // cssfn for react
 import { createCssConfig, 
 // utilities:
 usesGeneralProps, usesPrefixedProps, usesSuffixedProps, overwriteProps, } from '@cssfn/css-config'; // Stores & retrieves configuration using *css custom properties* (css variables)
-// nodestrap components:
+// nodestrap utilities:
+import { 
+// utilities:
+setRef, } from '@nodestrap/utilities';
 import { 
 // hooks:
 usesSizeVariant, usesBorderRadius, useExcitedState, } from '@nodestrap/basic';
@@ -230,19 +233,24 @@ export function SideDialog(props) {
     // rest props:
     const { 
     // essentials:
-    elmRef, // moved to <Card>
+    elmRef, // injected to <Card>
+    // semantics:
+    semanticTag, // moved to <Collapse>
+    semanticRole, // moved to <Collapse>
+    'aria-modal': ariaModal, // moved to <Collapse>
     // accessibilities:
-    isModal, // moved to <Collapse>
-    isVisible, // moved to <Collapse>
-    tabIndex = -1, // moved to <Card>
     active, // moved to <Collapse>
     inheritActive, // moved to <Collapse>
+    isVisible, // moved to <Collapse>
+    tabIndex = -1, // added to <Card>
     // actions:
-    onActiveChange, // implemented
     onExcitedChange, // not implemented
+    onActiveChange, // implemented
+    // components:
+    card = React.createElement(Card, null), 
     // children:
     header, // changed the default
-    ...restProps } = props;
+    ...restCardProps } = props;
     // handlers:
     const handleClose = onActiveChange && ((e) => {
         if (!e.defaultPrevented) {
@@ -269,9 +277,24 @@ export function SideDialog(props) {
         return header;
     })();
     // jsx:
+    const defaultCardProps = {
+        // other props:
+        ...restCardProps,
+        // essentials:
+        elmRef: !card.props.elmRef ? elmRef : (elm) => {
+            setRef(card.props.elmRef, elm);
+            setRef(elmRef, elm);
+        },
+        // accessibilities:
+        ...{
+            tabIndex,
+        },
+        // children:
+        header: headerFn,
+    };
     return (React.createElement(Collapse, { 
         // semantics:
-        semanticTag: props.semanticTag ?? 'dialog', semanticRole: props.semanticRole ?? 'dialog', "aria-modal": isModal, ...{
+        semanticTag: semanticTag, semanticRole: semanticRole, "aria-modal": ariaModal, ...{
             open: isVisible,
         }, 
         // accessibilities:
@@ -281,21 +304,14 @@ export function SideDialog(props) {
         // classes:
         classes: [
             sheet.main, // inject SideDialog class
-        ], stateClasses: [...(props.stateClasses ?? []),
+        ], stateClasses: [
             excitedState.class,
         ], 
         // events:
         onAnimationEnd: (e) => {
             // states:
             excitedState.handleAnimationEnd(e);
-        } },
-        React.createElement(Card, { ...restProps, 
-            // essentials:
-            elmRef: elmRef, ...{
-                tabIndex,
-            }, 
-            // children:
-            header: headerFn })));
+        } }, React.cloneElement(React.cloneElement(card, defaultCardProps), card.props)));
 }
 export function ModalSide(props) {
     // styles:
@@ -304,27 +320,24 @@ export function ModalSide(props) {
     const modalSideVariant = useModalSideVariant(props);
     // rest props:
     const { 
-    // components:
-    dialog = React.createElement(SideDialog, null), 
     // ModalSideVariant:
     modalSideStyle, 
+    // components:
+    card, 
     // children:
     header, footer, children, ...restBackdropProps } = props;
     // jsx:
-    const defaultDialogProps = {
-        // ModalSideVariant:
-        modalSideStyle,
-        // children:
-        header,
-        footer,
-        children,
-    };
     return (React.createElement(Modal, { ...restBackdropProps, 
-        // components:
-        dialog: React.cloneElement(React.cloneElement(dialog, defaultDialogProps), dialog.props), 
         // classes:
         mainClass: props.mainClass ?? sheet.main, variantClasses: [...(props.variantClasses ?? []),
             modalSideVariant.class,
-        ] }));
+        ] },
+        React.createElement(SideDialog, { 
+            // ModalSideVariant:
+            modalSideStyle: modalSideStyle, 
+            // components:
+            card: card, 
+            // children:
+            header: header, footer: footer }, children)));
 }
 export { ModalSide as default };
